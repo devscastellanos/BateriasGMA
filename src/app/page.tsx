@@ -1,25 +1,18 @@
 import Image from "next/image";
 import Header from "@/components/pages/header"
-import { Button } from "@/components/ui/button"
-import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-  ButtonGroupText,
-} from "@/components/ui/button-group"
-import { Badge } from "@/components/ui/badge"
-import { Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardAction,
-  CardDescription,
-  CardContent,} from "@/components/ui/card";
+import Tittle from "@/components/pages/tittle";
+import BrandCarousel from "@/components/pages/brandCarousel";
+import Baterias from "@/components/pages/baterias";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col bg-black items-center justify-between">
+    <main className="flex min-h-screen flex-col bg-white ">
       <Header />
-      
+      <Tittle />
+      <div className="pl-6 pr-6">
+        <BrandCarousel />
+      </div>
+      <Baterias />
     </main>
   );
 }

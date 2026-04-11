@@ -11,21 +11,22 @@ import {
 
 export default function Header() {
   return (
-    <header className="flex w-full bg-white/80 blur-[2px]backdrop-blur-md dark:bg-gray-900">
+    <header className="flex w-full bg-white/80 blur-[2px]backdrop-blur-md dark:bg-gray-900 shadow-lg box-border z-50">
     <div className="mx-auto flex w-full max-w-7xl flex-row items-center justify-center gap-4 px-4 py-2 sm:px-6 md:flex-row md:justify-between md:items-center lg:px-8">
       <Image
         src="/logo.png"
         alt="Logo"
-        width={100}
-        height={100}
-        className="md:mr-2"
+        width={150}
+        height={200}
+        loading="eager"
+        className="h-auto md:mr-2"
       />
       <div className="md:w-auto">
         <div className="hidden gap-2 md:flex md:w-auto md:flex-row md:items-center md:gap-1">
-          <Button variant={"link"} className="md:w-auto">Inicio</Button>
-          <Button variant={"link"} className="md:w-auto">Servicios</Button>
-          <Button variant={"link"} className="md:w-auto">Nosotros</Button>
-          <Button variant={"link"} className="md:w-auto">Contacto</Button>
+          <Button variant={"link"} className="md:w-auto text-xl">Inicio</Button>
+          <Button variant={"link"} className="md:w-auto text-xl">Servicios</Button>
+          <Button variant={"link"} className="md:w-auto text-xl">Nosotros</Button>
+          <Button variant={"link"} className="md:w-auto text-xl">Contacto</Button>
         </div>
         <div className="md:hidden">
           <Sheet>
@@ -36,7 +37,7 @@ export default function Header() {
                 </svg>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
+            <SheetContent side="top">
               <SheetHeader>
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
