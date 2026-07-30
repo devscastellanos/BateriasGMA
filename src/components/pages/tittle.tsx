@@ -24,7 +24,7 @@ import {
 
 export default function Tittle() {
   return (
-    <div className="flex flex-col bg-[#D9C5C5]">
+    <div id="inicio" className="flex flex-col bg-[#D9C5C5]">
       {/* Titulo */}
       <div className="flex flex-col ml-4 mt-4">
         <h1 className="text-balance text-2xl font-extrabold leading-tight tracking-tight text-black sm:text-4xl md:text-5xl">
