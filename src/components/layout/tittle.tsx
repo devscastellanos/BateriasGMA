@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import Image from "next/image";
+import { openWhatsApp } from "@/lib/utils";
 import {
   BatteryCharging,
   UserStar,
@@ -128,6 +129,12 @@ export default function Tittle() {
               variant={"secondary"}
               className="min-w-1/2 text-black"
               size={"lg"}
+              onClick={() =>
+                openWhatsApp(
+                  "573027015752",
+                  "Buen día, estoy interesado en cotizar una batería para mi carro.",
+                )
+              }
             >
               <Image
                 src="/whatsapp.svg"

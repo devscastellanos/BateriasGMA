@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   Sheet,
@@ -17,9 +17,19 @@ export default function Header() {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const pathname = usePathname();
+
   const handleClick = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
+    // If we're already on the homepage, scroll to the element.
+    if (pathname === "/" || pathname === "") {
+      const element = document.getElementById(id);
+      element?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
+    // Otherwise navigate to the homepage with a hash so browser will land at the section.
+    // Using router.push keeps client-side navigation.
+    router.push(`/#${id}`);
   };
 
   useEffect(() => {

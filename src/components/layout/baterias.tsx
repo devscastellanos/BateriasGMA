@@ -1,6 +1,6 @@
 "use client";
-import { Bateria } from "../../components/pages/marca/bateria";
-import { marcas } from "../../components/pages/marca/data";
+import { Marcas } from "../../app/marcas/page";
+import { marcas } from "../../data/marcasData";
 export default function Baterias() {
   return (
     <div id="baterias" className="flex flex-col  p-6 ml-4">
@@ -9,8 +9,9 @@ export default function Baterias() {
       </h2>
       <div className="flex flex-wrap gap-6 mt-6 max-w">
         {marcas.map((marca) => (
-          <Bateria
+          <Marcas
             key={marca.id}
+            slug={marca.slug}
             logo={marca.logo}
             name={marca.name}
             description={marca.descripcion}

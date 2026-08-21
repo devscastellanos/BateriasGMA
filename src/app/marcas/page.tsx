@@ -11,15 +11,16 @@ import {
 } from "@/components/ui/card";
 
 type BateriaProps = {
+  slug: string;
   logo: string | null;
   name: string;
   description: string;
 };
 
-export function Bateria({ logo, name, description }: BateriaProps) {
+export function Marcas({ slug, logo, name, description }: BateriaProps) {
   const router = useRouter();
   const handleClick = () => {
-    router.push(`/baterias/${name.toLowerCase().replace(/\s+/g, "-")}`);
+    router.push(`/baterias/${slug}`);
   };
 
   return (
