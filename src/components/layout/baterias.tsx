@@ -1,5 +1,4 @@
-"use client";
-import { Marcas } from "../../app/marcas/page";
+import { MarcaCard } from "@/components/marca-card";
 import { marcas } from "../../data/marcasData";
 export default function Baterias() {
   return (
@@ -9,7 +8,7 @@ export default function Baterias() {
       </h2>
       <div className="flex flex-wrap gap-6 mt-6 max-w">
         {marcas.map((marca) => (
-          <Marcas
+          <MarcaCard
             key={marca.id}
             slug={marca.slug}
             logo={marca.logo}

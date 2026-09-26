@@ -5,8 +5,8 @@ export default function About() {
       <p className="text-lg text-center max-w-2xl">
         En Baterías GMA, nos dedicamos a ofrecer baterías de alta calidad para
         vehículos, respaldadas por la experiencia y compromiso del Grupo
-        Miscelánea Automotriz S.A.S. Nuestro objetivo es garantizar que cada
-        cliente encuentre la batería perfecta para su automóvil, brindando un
+        Miscelánea Automotriz S.A.S. Nuestro objetivo es garantizar que cada cliente
+        encuentre la batería perfecta para su automóvil, brindando un
         servicio confiable y productos duraderos.
       </p>
     </div>

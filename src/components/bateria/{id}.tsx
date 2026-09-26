@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { marcas } from "@/data/marcasData";
 import { baterias } from "@/data/bateriaData";
 import { getCloudinaryDetailUrl } from "@/lib/cloudinary";
-import { Badge } from "../ui/badge";
+import { Badge, type BadgeVariant } from "../ui/badge";
 import { openWhatsApp } from "@/lib/utils";
 
 type BrandCatalogPageProps = {
@@ -27,14 +27,13 @@ export default function BrandCatalogPage({ id }: BrandCatalogPageProps) {
 
   const marcaBaterias = baterias.filter((b) => b.marcaId === marca?.id);
 
-  const TECH_VARIANT: Record<
-    string,
-    "default" | "secondary" | "destructive" | "outline" | "ghost" | "link"
-  > = {
+  // El tipo se deriva de `badgeVariants` en vez de escribirse a mano: la lista
+  // manual se quedó atrás y le faltaban `muted` y `black`.
+  const TECH_VARIANT = {
     PLOMO: "destructive",
     EFB: "muted",
     AGM: "black",
-  };
+  } satisfies Record<string, NonNullable<BadgeVariant>>;
 
   if (!marca) {
     notFound();
@@ -81,8 +80,9 @@ export default function BrandCatalogPage({ id }: BrandCatalogPageProps) {
                     <Badge
                       variant={
                         TECH_VARIANT[
-                          String(item.tecnologia)?.toUpperCase() ?? "PLOMO"
-                        ]
+                          String(item.tecnologia ?? "PLOMO")
+                            .toUpperCase() as keyof typeof TECH_VARIANT
+                        ] ?? "destructive"
                       }
                     >
                       {item.tecnologia ?? "PLOMO"}

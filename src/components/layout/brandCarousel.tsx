@@ -18,8 +18,8 @@ const brands = [
 ];
 
 export default function BrandCarousel() {
-  const containerRef = useRef(null);
-  const innerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;

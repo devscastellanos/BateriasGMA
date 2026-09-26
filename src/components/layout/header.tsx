@@ -2,8 +2,26 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { useState, useEffect } from "react";
+import { HashLink } from "./hash-link";
+
+// Los enlaces del header van sueltos, sin envolver en <Button asChild>.
+// Con `asChild` el botón se convierte en un Slot de Radix que se fusiona
+// con el hijo: con un <Link> normal funciona, pero con un componente que trae
+// su propio onClick —como HashLink— no hay garantía de cuál gana. Sin la
+// envoltura, el header y el footer usan el mismo componente y se comportan
+// igual por construcción, no por suerte.
+const navDesktop =
+  "inline-flex h-8 items-center rounded-lg px-2.5 text-xl font-medium " +
+  "text-[#947A73] underline-offset-4 transition-colors hover:text-primary hover:underline " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 " +
+  "whitespace-nowrap select-none cursor-pointer md:w-auto";
+
+const navMovil =
+  "flex w-full items-center justify-start rounded-lg px-4 py-2 text-base " +
+  "text-[#947A73] transition-colors hover:bg-muted hover:text-foreground " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 cursor-pointer";
 import {
   Sheet,
   SheetClose,
@@ -14,23 +32,8 @@ import {
 } from "@/components/ui/sheet";
 
 export default function Header() {
-  const router = useRouter();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const pathname = usePathname();
-
-  const handleClick = (id: string) => {
-    // If we're already on the homepage, scroll to the element.
-    if (pathname === "/" || pathname === "") {
-      const element = document.getElementById(id);
-      element?.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
-
-    // Otherwise navigate to the homepage with a hash so browser will land at the section.
-    // Using router.push keeps client-side navigation.
-    router.push(`/#${id}`);
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,30 +66,15 @@ export default function Header() {
         />
         <div className="md:w-auto">
           <div className="hidden gap-2 md:flex md:w-auto md:flex-row md:items-center md:gap-1">
-            <Button
-              variant={"link"}
-              className="md:w-auto text-xl"
-              onClick={() => {
-                handleClick("inicio");
-              }}
-            >
+            <Link href="/" className={navDesktop}>
               Inicio
-            </Button>
-            <Button
-              variant={"link"}
-              className="md:w-auto text-xl"
-              onClick={() => {
-                handleClick("baterias");
-              }}
-            >
+            </Link>
+            <HashLink href="/#baterias" className={navDesktop}>
               Baterías
-            </Button>
-            <Button variant={"link"} className="md:w-auto text-xl">
-              Nosotros
-            </Button>
-            <Button variant={"link"} className="md:w-auto text-xl">
+            </HashLink>
+            <Link href="/contacto" className={navDesktop}>
               Contacto
-            </Button>
+            </Link>
           </div>
           <div className="md:hidden">
             <Sheet>
@@ -118,36 +106,19 @@ export default function Header() {
                 </SheetHeader>
                 <div className="flex flex-col gap-2 px-4 pb-4">
                   <SheetClose asChild>
-                    <Button
-                      variant={"ghost"}
-                      className="justify-start"
-                      onClick={() => {
-                        handleClick("inicio");
-                      }}
-                    >
+                    <Link href="/" className={navMovil}>
                       Inicio
-                    </Button>
+                    </Link>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Button
-                      variant={"ghost"}
-                      className="justify-start"
-                      onClick={() => {
-                        handleClick("baterias");
-                      }}
-                    >
+                    <HashLink href="/#baterias" className={navMovil}>
                       Baterías
-                    </Button>
+                    </HashLink>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Button variant={"ghost"} className="justify-start">
-                      Nosotros
-                    </Button>
-                  </SheetClose>
-                  <SheetClose asChild>
-                    <Button variant={"ghost"} className="justify-start">
+                    <Link href="/contacto" className={navMovil}>
                       Contacto
-                    </Button>
+                    </Link>
                   </SheetClose>
                 </div>
               </SheetContent>

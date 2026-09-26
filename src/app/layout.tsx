@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -18,10 +19,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Baterías GMA",
-  description: "Baterías para carro por Grupo Miscelanéa Automotriz S.A.S ",
+  description:
+    "Baterías para carro por Grupo Miscelánea Automotriz S.A.S.",
   icons: {
-    icon: "/logotipoGMA.png",
-    apple: "/logotipoGMA.png",
+    icon: "/logotipo-gma.png",
+    apple: "/logotipo-gma.png",
   },
 };
 
@@ -45,6 +47,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Header />
         <div className="flex-1">{children}</div>
+        <Footer />
       </body>
     </html>
   );

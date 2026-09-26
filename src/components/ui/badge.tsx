@@ -29,6 +29,9 @@ const badgeVariants = cva(
   },
 );
 
+/** Variante válida del badge. Exportada para que el llamador la tipifique. */
+type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
+
 function Badge({
   className,
   variant = "default",
@@ -49,3 +52,4 @@ function Badge({
 }
 
 export { Badge, badgeVariants };
+export type { BadgeVariant };

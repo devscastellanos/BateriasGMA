@@ -2,7 +2,6 @@ import Header from "@/components/layout/header";
 import Tittle from "@/components/layout/tittle";
 import BrandCarousel from "@/components/layout/brandCarousel";
 import Baterias from "@/components/layout/baterias";
-import Footer from "@/components/layout/footer";
 import About from "@/components/layout/about";
 
 export default function Home() {
@@ -13,8 +12,6 @@ export default function Home() {
         <BrandCarousel />
       </div>
       <Baterias />
-
-      <Footer />
     </main>
   );
 }

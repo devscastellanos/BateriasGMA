@@ -1,4 +1,12 @@
+import Link from "next/link";
 import { MapPin, Phone } from "lucide-react";
+import { HashLink } from "./hash-link";
+
+// Un solo lugar para el estilo de los enlaces, para que no se diferencien entre sí.
+const enlace =
+  "rounded-sm text-[#78716C] transition-colors hover:text-white " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 " +
+  "focus-visible:ring-offset-2 focus-visible:ring-offset-black";
 
 export default function Footer() {
   return (
@@ -6,7 +14,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-red-700">
-            Grupo Mscelanéa Automotríz
+            Grupo Miscelánea Automotriz S.A.S.
           </h2>
 
           <p className="max-w-sm text-sm leading-7 text-zinc-300">
@@ -17,13 +25,30 @@ export default function Footer() {
 
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-white/90">Explora</h2>
-          <p className="text-[#78716C]">Baterías</p>
-          <p className="text-[#78716C]">Repuestos eléctricos</p>
-          <p className="text-[#78716C]">Página principal</p>
+          <ul className="space-y-3">
+            <li>
+              <HashLink href="/#baterias" className={enlace}>
+                Baterías
+              </HashLink>
+            </li>
+            <li>
+              <a
+                href="https://www.grupomiscelanea.com.co"
+                className={enlace}
+              >
+                Repuestos eléctricos
+              </a>
+            </li>
+            <li>
+              <Link href="/" className={enlace}>
+                Página principal
+              </Link>
+            </li>
+          </ul>
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-white/90">Visitanos</h2>
+          <h2 className="text-2xl font-bold text-white/90">Sede Eduardo Santos</h2>
 
           <div className="flex items-start gap-2 text-[#78716C]">
             <MapPin className="mt-0.5 h-5 w-5 shrink-0" />
@@ -34,9 +59,12 @@ export default function Footer() {
 
           <div className="flex items-start gap-2 text-[#78716C]">
             <Phone className="mt-0.5 h-5 w-5 shrink-0" />
-            <span className="break-words leading-6">
-              Teléfono: 311 841 8032
-            </span>
+            <a
+              href="tel:+573118418032"
+              className="break-words leading-6 transition-colors hover:text-white"
+            >
+              311 841 8032
+            </a>
           </div>
 
           <p className="text-[#78716C]">Lunes a Viernes: 8:00 AM - 6:00 PM</p>
@@ -56,20 +84,24 @@ export default function Footer() {
 
           <div className="flex items-start gap-2 text-[#78716C]">
             <Phone className="mt-0.5 h-5 w-5 shrink-0" />
-            <span className="break-words leading-6">
-              Teléfono: 313 800 4214
-            </span>
+            <a
+              href="tel:+573138004214"
+              className="break-words leading-6 transition-colors hover:text-white"
+            >
+              313 800 4214
+            </a>
           </div>
 
           <p className="text-[#78716C]">Lunes a Viernes: 8:00 AM - 6:00 PM</p>
           <p className="text-[#78716C]">Sábado: 8:00 AM - 5:00 PM</p>
+          <p className="text-[#78716C]">Domingo: Cerrado</p>
         </section>
       </div>
 
       <div className="border-t border-white/10 px-4 py-4">
         <div className="mx-auto max-w-7xl text-sm text-zinc-400">
           <p>
-            &copy; 2026 Grupo Miscelanéa Automotríz S.A.S. Todos los derechos
+            &copy; 2026 Grupo Miscelánea Automotriz S.A.S. Todos los derechos
             reservados.
           </p>
         </div>
