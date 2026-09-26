@@ -8,39 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { sedes } from "@/data/contactoData";
+import { waMeUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Contacto",
   description:
     "Visítanos en nuestras dos sedes en Bogotá: Eduardo Santos y Restrepo. Teléfonos, horarios y WhatsApp para cotizar tu batería.",
 };
-
-const WHATSAPP = "573027015752";
-
-const sedes = [
-  {
-    nombre: "Sede Eduardo Santos",
-    direccion: "Calle 1 #18-64, Bogotá, Eduardo Santos",
-    telefono: "311 841 8032",
-    tel: "+573118418032",
-    horarios: [
-      "Lunes a Viernes: 8:00 AM - 6:00 PM",
-      "Sábado: 8:00 AM - 5:00 PM",
-      "Domingo: 9:00 AM - 2:00 PM",
-    ],
-  },
-  {
-    nombre: "Sede Restrepo",
-    direccion: "Av. Caracas #18-64, Restrepo",
-    telefono: "313 800 4214",
-    tel: "+573138004214",
-    horarios: [
-      "Lunes a Viernes: 8:00 AM - 6:00 PM",
-      "Sábado: 8:00 AM - 5:00 PM",
-      "Domingo: Cerrado",
-    ],
-  },
-];
 
 export default function ContactoPage() {
   return (
@@ -90,9 +65,10 @@ export default function ContactoPage() {
 
               <Button asChild className="w-full">
                 <a
-                  href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
-                    `Hola, quiero cotizar una batería en la ${sede.nombre}.`
-                  )}`}
+                  href={waMeUrl(
+                    sede.whatsapp,
+                    `Hola, quiero cotizar una batería en la ${sede.nombre}.`,
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

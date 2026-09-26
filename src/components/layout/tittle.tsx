@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { SplitText } from "gsap/all";
 import Image from "next/image";
 import { openWhatsApp } from "@/lib/utils";
+import { WHATSAPP_COMERCIAL } from "@/data/contactoData";
 import {
   BatteryCharging,
   UserStar,
@@ -131,7 +132,7 @@ export default function Tittle() {
               size={"lg"}
               onClick={() =>
                 openWhatsApp(
-                  "573027015752",
+                  WHATSAPP_COMERCIAL,
                   "Buen día, estoy interesado en cotizar una batería para mi carro.",
                 )
               }

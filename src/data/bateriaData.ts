@@ -9,6 +9,7 @@ export type Bateria = {
 
   caja?: string;
   amperaje?: number;
+  cca?: number;
 
   polaridad?: "derecha" | "izquierda";
 
@@ -17,6 +18,25 @@ export type Bateria = {
   disponible: boolean;
 };
 
+// Referencias cuya foto no existe todavia en Cloudinary. Verificado con un
+// HEAD por publicId: los 31 de este archivo devuelven 200 salvo estos 8, que
+// devuelven 404. Vive aqui y no en la pagina para que cuando se suba la foto
+// haya que borrar una entrada y no dos lugares.
+export const SIN_FOTO = new Set([
+  "Duncan/48R1300",
+  "Duncan/481300",
+  "Duncan/NS60750",
+  "Duncan/27R1150",
+  "Duncan/271150",
+  "Duncan/31h1250",
+  "Duncan/47R1300EFB",
+  "Duncan/49R1600EFB",
+]);
+
+// `caja` y `polaridad` se sacaron del texto de cada `titulo`, que es donde ya
+// estaban escritos. No se dedujo nada: si el título no lo decía, el campo se
+// dejó vacío. Las referencias de MAC dicen solo el modelo ("N60L800M"), sin
+// grupo ni polaridad, así que sus 8 registros van sin esos dos datos.
 export const baterias: Bateria[] = [
   {
     id: "NS40R670",
@@ -24,6 +44,7 @@ export const baterias: Bateria[] = [
     referencia: "NS40R670",
     titulo: "Batería Duncan caja NS40 670",
     publicId: "Duncan/NS40R670",
+    caja: "NS40",
     disponible: true,
   },
   {
@@ -32,6 +53,7 @@ export const baterias: Bateria[] = [
     referencia: "NS40R700",
     titulo: "Batería Duncan caja NS40 700",
     publicId: "Duncan/NS40R700",
+    caja: "NS40",
     disponible: true,
   },
   {
@@ -39,6 +61,10 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "42R850",
     titulo: "Batería Duncan caja 42 850 / Polaridad derecha",
+    caja: "42",
+    amperaje: 850,
+    cca: 500,
+    polaridad: "derecha",
     publicId: "Duncan/42R850",
     disponible: true,
   },
@@ -47,6 +73,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "42850",
     titulo: "Batería Duncan caja 42 850 / Polaridad izquierda",
+    caja: "42",
+    polaridad: "izquierda",
     publicId: "Duncan/42850",
     disponible: true,
   },
@@ -55,6 +83,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "36R750",
     titulo: "Batería Duncan caja 36 750 / Polaridad derecha",
+    caja: "36",
+    polaridad: "derecha",
     publicId: "Duncan/36R750",
     disponible: true,
   },
@@ -63,6 +93,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "42R950",
     titulo: "Batería Duncan caja 42 950 / Polaridad derecha",
+    caja: "42",
+    polaridad: "derecha",
     publicId: "Duncan/42R950",
     disponible: true,
   },
@@ -71,6 +103,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "42950",
     titulo: "Batería Duncan caja 42 950 / Polaridad izquierda",
+    caja: "42",
+    polaridad: "izquierda",
     publicId: "Duncan/42950",
     disponible: true,
   },
@@ -79,6 +113,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "34R1000",
     titulo: "Batería Duncan caja 34 1000 / Polaridad derecha",
+    caja: "34",
+    polaridad: "derecha",
     publicId: "Duncan/34R1000",
     disponible: true,
   },
@@ -87,6 +123,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "341000",
     titulo: "Batería Duncan caja 34 1000 / Polaridad izquierda",
+    caja: "34",
+    polaridad: "izquierda",
     publicId: "Duncan/341000",
     disponible: true,
   },
@@ -95,6 +133,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "48R1300",
     titulo: "Batería Duncan caja 48 1300 / Polaridad derecha",
+    caja: "48",
+    polaridad: "derecha",
     publicId: "Duncan/48R1300",
     disponible: true,
   },
@@ -103,6 +143,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "481300",
     titulo: "Batería Duncan caja 48 1300 / Polaridad izquierda",
+    caja: "48",
+    polaridad: "izquierda",
     publicId: "Duncan/481300",
     disponible: true,
   },
@@ -111,6 +153,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "NS60750",
     titulo: "Batería Duncan caja NS60 750 / Polaridad izquierda",
+    caja: "NS60",
+    polaridad: "izquierda",
     publicId: "Duncan/NS60750",
     disponible: true,
   },
@@ -119,6 +163,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "NS60R750",
     titulo: "Batería Duncan caja NS60 750 / Polaridad derecha",
+    caja: "NS60",
+    polaridad: "derecha",
     publicId: "Duncan/NS60R750",
     disponible: true,
   },
@@ -127,6 +173,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "35R1000",
     titulo: "Batería Duncan caja 35 1000 / Polaridad derecha",
+    caja: "35",
+    polaridad: "derecha",
     publicId: "Duncan/35R1000",
     disponible: true,
   },
@@ -135,6 +183,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "27R1150",
     titulo: "Batería Duncan caja 27 1150 / Polaridad derecha",
+    caja: "27",
+    polaridad: "derecha",
     publicId: "Duncan/27R1150",
     disponible: true,
   },
@@ -143,6 +193,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "271150",
     titulo: "Batería Duncan caja 27 1150 / Polaridad izquierda",
+    caja: "27",
+    polaridad: "izquierda",
     publicId: "Duncan/271150",
     disponible: true,
   },
@@ -151,6 +203,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "49R1300",
     titulo: "Batería Duncan caja 49 1300 / Polaridad derecha",
+    caja: "49",
+    polaridad: "derecha",
     publicId: "Duncan/49R1300",
     disponible: true,
   },
@@ -159,6 +213,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "651100",
     titulo: "Batería Duncan caja 65 1100 / Polaridad izquierda",
+    caja: "65",
+    polaridad: "izquierda",
     publicId: "Duncan/651100",
     disponible: true,
   },
@@ -167,6 +223,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "30h1250",
     titulo: "Batería Duncan caja 30H 1250 / Polaridad izquierda",
+    caja: "30H",
+    polaridad: "izquierda",
     publicId: "Duncan/30h1250",
     disponible: true,
   },
@@ -175,6 +233,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "31h1250",
     titulo: "Batería Duncan caja 31H 1250 / Polaridad izquierda",
+    caja: "31H",
+    polaridad: "izquierda",
     publicId: "Duncan/31h1250",
     disponible: true,
   },
@@ -183,6 +243,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "4D1500",
     titulo: "Batería Duncan caja 4D 1500 / Polaridad izquierda",
+    caja: "4D",
+    polaridad: "izquierda",
     publicId: "Duncan/4D1500",
     disponible: true,
     tecnologia: "PLOMO",
@@ -192,6 +254,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "47R1300EFB",
     titulo: "Batería Duncan caja 47 1300 EFB / Polaridad derecha",
+    caja: "47",
+    polaridad: "derecha",
     publicId: "Duncan/47R1300EFB",
     disponible: true,
     tecnologia: "EFB",
@@ -201,6 +265,8 @@ export const baterias: Bateria[] = [
     marcaId: "duncan",
     referencia: "49R1600EFB",
     titulo: "Batería Duncan caja 49 1600 EFB / Polaridad derecha",
+    caja: "49",
+    polaridad: "derecha",
     publicId: "Duncan/49R1600EFB",
     disponible: true,
     tecnologia: "AGM",

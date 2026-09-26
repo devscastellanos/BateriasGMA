@@ -9,3 +9,12 @@ export const getCloudinaryDetailUrl = (publicId: string) => getCloudinaryUrl("w_
 export const getCloudinaryMinUrl = (publicId: string) => getCloudinaryUrl("w_80,h_80,c_thumb,f_auto,q_auto", publicId);
 
 export const getCloudinaryLogoUrl = (publicId: string) => getCloudinaryUrl("w_200,h_80,c_pad,f_auto,q_auto", publicId);
+
+// Foto completa de la ficha de producto. Usa `c_fit` y no `c_fill` a proposito:
+// las fotos de este catalogo no comparten proporcion (hay cuadradas de 600, de
+// 1080 y de 1000, y dos verticales de 1800x2400) y `c_fill` rellena el marco
+// recortando lo que sobra: entre 12% y 44% de la bateria, segun el caso.
+// `c_fit` encaja la imagen entera dentro de 800x600 sin cortar nada y sin
+// agrandarla mas alla de su resolucion original. Sin `b_` de fondo para que no
+// aparezca un recuadro blanco contra el fondo calido del sitio.
+export const getCloudinaryProductoUrl = (publicId: string) => getCloudinaryUrl("w_800,h_600,c_fit,f_auto,q_auto", publicId);

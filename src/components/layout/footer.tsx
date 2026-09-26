@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MapPin, Phone } from "lucide-react";
 import { HashLink } from "./hash-link";
+import { sedes } from "@/data/contactoData";
 
 // Un solo lugar para el estilo de los enlaces, para que no se diferencien entre sí.
 const enlace =
@@ -47,55 +48,32 @@ export default function Footer() {
           </ul>
         </section>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-white/90">Sede Eduardo Santos</h2>
+        {sedes.map((sede) => (
+          <section key={sede.id} className="space-y-4">
+            <h2 className="text-2xl font-bold text-white/90">{sede.nombre}</h2>
 
-          <div className="flex items-start gap-2 text-[#78716C]">
-            <MapPin className="mt-0.5 h-5 w-5 shrink-0" />
-            <span className="break-words leading-6">
-              Calle 1 #18-64, Bogotá, Eduardo Santos
-            </span>
-          </div>
+            <div className="flex items-start gap-2 text-[#78716C]">
+              <MapPin className="mt-0.5 h-5 w-5 shrink-0" />
+              <span className="break-words leading-6">{sede.direccion}</span>
+            </div>
 
-          <div className="flex items-start gap-2 text-[#78716C]">
-            <Phone className="mt-0.5 h-5 w-5 shrink-0" />
-            <a
-              href="tel:+573118418032"
-              className="break-words leading-6 transition-colors hover:text-white"
-            >
-              311 841 8032
-            </a>
-          </div>
+            <div className="flex items-start gap-2 text-[#78716C]">
+              <Phone className="mt-0.5 h-5 w-5 shrink-0" />
+              <a
+                href={`tel:${sede.tel}`}
+                className="break-words leading-6 transition-colors hover:text-white"
+              >
+                {sede.telefono}
+              </a>
+            </div>
 
-          <p className="text-[#78716C]">Lunes a Viernes: 8:00 AM - 6:00 PM</p>
-          <p className="text-[#78716C]">Sábado: 8:00 AM - 5:00 PM</p>
-          <p className="text-[#78716C]">Domingo: 9:00 AM - 2:00 PM</p>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold text-white/90">Sede Restrepo</h2>
-
-          <div className="flex items-start gap-2 text-[#78716C]">
-            <MapPin className="mt-0.5 h-5 w-5 shrink-0" />
-            <span className="break-words leading-6">
-              Av. Caracas #18-64, Restrepo
-            </span>
-          </div>
-
-          <div className="flex items-start gap-2 text-[#78716C]">
-            <Phone className="mt-0.5 h-5 w-5 shrink-0" />
-            <a
-              href="tel:+573138004214"
-              className="break-words leading-6 transition-colors hover:text-white"
-            >
-              313 800 4214
-            </a>
-          </div>
-
-          <p className="text-[#78716C]">Lunes a Viernes: 8:00 AM - 6:00 PM</p>
-          <p className="text-[#78716C]">Sábado: 8:00 AM - 5:00 PM</p>
-          <p className="text-[#78716C]">Domingo: Cerrado</p>
-        </section>
+            {sede.horarios.map((horario) => (
+              <p key={horario} className="text-[#78716C]">
+                {horario}
+              </p>
+            ))}
+          </section>
+        ))}
       </div>
 
       <div className="border-t border-white/10 px-4 py-4">
