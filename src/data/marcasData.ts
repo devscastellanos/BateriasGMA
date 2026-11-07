@@ -62,4 +62,15 @@ export const marcas: Marca[] = [
     logo: "baterias/Moura",
     activo: true,
   },
+  // No es una marca: agrupa las que tienen una o dos referencias y no merecen
+  // pagina propia. Cada bateria dice su marca real en `fabricante`. Va al
+  // final para que en la portada aparezca despues de las marcas de verdad.
+  {
+    id: "otras",
+    name: "Otras marcas",
+    slug: "otras",
+    descripcion: "Coexito, Varta, Fiamm y Optima.",
+    logo: null,
+    activo: true,
+  },
 ];

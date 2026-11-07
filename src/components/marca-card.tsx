@@ -24,13 +24,21 @@ export function MarcaCard({ slug, logo, name, description }: MarcaCardProps) {
     <Card className="relative mx-auto w-full max-w-sm pt-0">
       <div className="absolute  z-30 aspect-video bg-black/35" />
       <Link href={href}>
-        <Image
-          src={getCloudinaryCardUrl(logo ?? "baterias/MAC")}
-          alt={name}
-          width={500}
-          height={280}
-          className="relative z-20 aspect-video w-full object-scale-down"
-        />
+        {/* Sin logo se escribe el nombre. Antes caia al logo de MAC, que
+            mostraba la marca equivocada en "Otras marcas". */}
+        {logo ? (
+          <Image
+            src={getCloudinaryCardUrl(logo)}
+            alt={name}
+            width={500}
+            height={280}
+            className="relative z-20 aspect-video w-full object-scale-down"
+          />
+        ) : (
+          <div className="relative z-20 flex aspect-video w-full items-center justify-center bg-zinc-100 text-3xl font-black tracking-tight text-zinc-800">
+            {name}
+          </div>
+        )}
       </Link>
       <CardHeader>
         <CardTitle>{name}</CardTitle>

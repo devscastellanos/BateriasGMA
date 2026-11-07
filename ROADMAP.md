@@ -86,7 +86,7 @@ Nada de esto existe hoy:
 | Especificaciones completas | Declaradas en el sitio pero nunca llenadas: están escritas dentro del texto del nombre |
 | Compatibilidad con vehículos | **No existe** |
 | Descripción propia | **No existe** |
-| Precio | No se muestra (ver preguntas abiertas) |
+| Precio | **Existe y se muestra** en la tarjeta y en la ficha |
 | Botones que funcionen | Uno de los dos no hace nada |
 
 ## La advertencia honesta
@@ -284,10 +284,11 @@ de que la Fase 0 se hizo mal.
 - **¿Quién carga los productos?** Si es el dueño de GMA, conviene una
   herramienta con pantalla de edición. Si es alguien técnico, alcanza con la base
   de datos y una pantalla simple.
-- **¿Se muestran precios?** Si sí, el precio tiene que existir en el esquema
-  desde la Fase 0, no desde la Fase 6. Hay una razón legal colombiana en juego
-  sobre el derecho del consumidor a conocer el precio, y conviene confirmarla
-  con asesoría antes de decidir.
+- ~~**¿Se muestran precios?**~~ **Resuelto: sí.** El precio se muestra desde la
+  Fase 1, en la tarjeta del catálogo y en la ficha de producto. Es obligatorio
+  en el esquema y se carga con impuestos incluidos, que es como debe mostrarse
+  un precio a un consumidor en Colombia. La Fase 6 solo tiene que agregar el
+  carrito de compra sobre una base que ya existe.
 
 **Lo que desbloquea:** que varias personas puedan cargar productos sin tocar
 código, y que el catálogo crezca sin romper nada.
@@ -307,6 +308,8 @@ código, y que el catálogo crezca sin romper nada.
 - Cuenta de cliente e historial de compras.
 - Confirmación del pedido y aviso al cliente.
 - Envío a domicilio e instalación, que ya se prometen comercialmente.
+  **Decidido: el domicilio es solo dentro de Bogotá.** Fuera de la ciudad no se
+  despacha; quien esté afuera puede recoger en una sede.
 
 **Lo que ya está hecho y no se tira**
 
@@ -379,8 +382,11 @@ Estas bloquean decisiones concretas. Ninguna impide empezar la Fase 0.
 1. **¿Quién carga los productos?** Dueño, técnico, o ambos → decide la Fase 5.
 2. **¿Existe una lista de qué vehículos usa cada referencia?** → decide si la
    ficha puede responder la búsqueda más valiosa.
-3. **¿Se muestran precios?** → define el esquema desde el principio, y cambia
-   el aspecto de la ficha. Confirmar con asesoría legal.
+3. ~~**¿Se muestran precios?**~~ → **Resuelto: sí, y ya se muestran.** El
+   precio es obligatorio en el esquema desde el origen, aparece en la tarjeta
+   del catálogo y en la ficha, y se carga con impuestos incluidos. La Fase 6
+   ya no tiene que inventarlo: solo agregar el carrito. Queda pendiente pasarlo
+   a datos estructurados para que Google lo muestre en los resultados.
 4. **¿Hay manual de marca** (logotipo, colores, tipografía oficiales)? → define si
    se trabaja con lo que hay o se propone una dirección.
 5. **¿Saben el inventario por referencia o solo si está disponible?** → define si

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Clock, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { sedes } from "@/data/contactoData";
+import { EMPRESA, sedes } from "@/data/contactoData";
 import { waMeUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -25,6 +25,18 @@ export default function ContactoPage() {
         <p className="max-w-2xl text-lg leading-7 text-gray-600">
           Atendemos en dos sedes en Bogotá. Si ya sabes qué batería buscas,
           escríbenos por WhatsApp y te cotizamos de una.
+        </p>
+        <p className="flex items-center gap-2 text-gray-700">
+          <Mail className="h-5 w-5 shrink-0 text-red-700" />
+          <a
+            href={`mailto:${EMPRESA.correo}`}
+            className="font-medium underline-offset-4 hover:underline"
+          >
+            {EMPRESA.correo}
+          </a>
+        </p>
+        <p className="text-sm text-gray-500">
+          {EMPRESA.razonSocial} · NIT {EMPRESA.nit}
         </p>
       </header>
 

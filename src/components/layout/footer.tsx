@@ -1,7 +1,16 @@
 import Link from "next/link";
-import { MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { HashLink } from "./hash-link";
-import { sedes } from "@/data/contactoData";
+import { EMPRESA, URL_SIC, sedes } from "@/data/contactoData";
+
+// Enlaces legales de la franja inferior. La Ley 1480 (art. 50) pide que el
+// enlace a la SIC y la informacion de compra esten visibles en todo el sitio.
+const LEGALES = [
+  { href: "/terminos-y-condiciones", texto: "Términos y condiciones" },
+  { href: "/politica-de-datos", texto: "Datos personales" },
+  { href: "/garantias-y-devoluciones#garantia", texto: "Garantías y retracto" },
+  { href: "/garantias-y-devoluciones#pqr", texto: "PQR" },
+];
 
 // Un solo lugar para el estilo de los enlaces, para que no se diferencien entre sí.
 const enlace =
@@ -15,13 +24,24 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-red-700">
-            Grupo Miscelánea Automotriz S.A.S.
+            {EMPRESA.razonSocial}
           </h2>
 
           <p className="max-w-sm text-sm leading-7 text-zinc-300">
             Especialistas en partes eléctricas y baterías para vehículos con más
             de 15 años de experiencia en el mercado.
           </p>
+
+          <p className="text-sm text-zinc-300">NIT {EMPRESA.nit}</p>
+          <div className="flex items-start gap-2 text-[#78716C]">
+            <Mail className="mt-0.5 h-5 w-5 shrink-0" />
+            <a
+              href={`mailto:${EMPRESA.correo}`}
+              className="break-all leading-6 transition-colors hover:text-white"
+            >
+              {EMPRESA.correo}
+            </a>
+          </div>
         </section>
 
         <section className="space-y-4">
@@ -31,6 +51,11 @@ export default function Footer() {
               <HashLink href="/#baterias" className={enlace}>
                 Baterías
               </HashLink>
+            </li>
+            <li>
+              <Link href="/baterias" className={enlace}>
+                Catálogo completo
+              </Link>
             </li>
             <li>
               <a
@@ -77,11 +102,26 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10 px-4 py-4">
-        <div className="mx-auto max-w-7xl text-sm text-zinc-400">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-zinc-400 md:flex-row md:items-center md:justify-between">
           <p>
-            &copy; 2026 Grupo Miscelánea Automotriz S.A.S. Todos los derechos
-            reservados.
+            &copy; 2026 {EMPRESA.razonSocial} · NIT {EMPRESA.nit}. Todos los
+            derechos reservados.
           </p>
+          <nav aria-label="Información legal" className="flex flex-wrap gap-x-4 gap-y-2">
+            {LEGALES.map((l) => (
+              <Link key={l.href} href={l.href} className={enlace}>
+                {l.texto}
+              </Link>
+            ))}
+            <a
+              href={URL_SIC}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={enlace}
+            >
+              Superintendencia de Industria y Comercio
+            </a>
+          </nav>
         </div>
       </div>
     </footer>

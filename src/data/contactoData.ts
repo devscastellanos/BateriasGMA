@@ -12,6 +12,28 @@ export type Sede = {
 };
 
 /**
+ * Identificación del vendedor. La Ley 1480 de 2011 (art. 50) exige mostrarla
+ * en todo sitio que venda por internet: razón social, NIT, dirección,
+ * teléfono y correo. Escrita una sola vez para que el footer, las páginas
+ * legales y la de contacto no puedan decir cosas distintas.
+ */
+export const EMPRESA = {
+  razonSocial: "Grupo Miscelánea Automotriz S.A.S.",
+  nit: "900.406.797-1",
+  correo: "gmacarrosymotos@gmail.com",
+};
+
+/**
+ * Domicilio en Bogotá el mismo día si el pedido se confirma antes de esta hora.
+ * Lo usan el carrito, la ficha y los términos y condiciones.
+ */
+export const HORA_CORTE_ENTREGA = "4:00 p. m.";
+
+/** Página de la autoridad de protección al consumidor. La Ley 1480 (art. 50)
+ *  pide un enlace visible a ella en todo sitio de comercio electrónico. */
+export const URL_SIC = "https://www.sic.gov.co";
+
+/**
  * Línea de venta de Baterías GMA. No pertenece a ninguna sede, por eso vive
  * aparte y no dentro de `sedes`: es el número que aparece en las fichas de
  * producto y en el botón "Contáctanos" de la portada.

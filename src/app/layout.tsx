@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { SITE_URL } from "@/lib/site";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import BotonWhatsapp from "@/components/layout/boton-whatsapp";
+import { Toaster } from "@/components/ui/sonner";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -52,6 +54,11 @@ export default function RootLayout({
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />
+        {/* Va despues del footer y es `fixed`, asi que queda por encima de las
+            dos cosas. El header tambien es `fixed` y `z-50`, pero vive arriba y
+            no se cruzan. */}
+        <BotonWhatsapp />
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );

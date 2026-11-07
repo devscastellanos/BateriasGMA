@@ -1,43 +1,20 @@
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { marcas } from "@/data/marcasData";
-import { baterias, SIN_FOTO } from "@/data/bateriaData";
-import { getCloudinaryProductoUrl } from "@/lib/cloudinary";
-import { Badge, type BadgeVariant } from "../ui/badge";
-import { waMeUrl } from "@/lib/utils";
-import { WHATSAPP_COMERCIAL } from "@/data/contactoData";
+import TarjetaBateria from "@/components/bateria/tarjeta-bateria";
+import { bateriasDeMarca, obtenerMarca } from "@/lib/catalogo";
 
 type BrandCatalogPageProps = {
   marcaSlug: string;
 };
 
-// El tipo se deriva de `badgeVariants` en vez de escribirse a mano: la lista
-// manual se quedó atrás y le faltaban `muted` y `black`.
-const TECH_VARIANT = {
-  PLOMO: "destructive",
-  EFB: "muted",
-  AGM: "black",
-} satisfies Record<string, NonNullable<BadgeVariant>>;
-
-export default function BrandCatalogPage({ marcaSlug }: BrandCatalogPageProps) {
-  const marca = marcas.find((item) => item.slug === marcaSlug && item.activo);
-
-  const marcaBaterias = baterias.filter((b) => b.marcaId === marca?.id);
+export default async function BrandCatalogPage({ marcaSlug }: BrandCatalogPageProps) {
+  const marca = await obtenerMarca(marcaSlug);
 
   if (!marca) {
     notFound();
   }
+
+  const marcaBaterias = await bateriasDeMarca(marca.id);
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fef2f2_0%,#ffffff_40%,#fff7ed_100%)] text-zinc-900 pt-15">
@@ -60,80 +37,9 @@ export default function BrandCatalogPage({ marcaSlug }: BrandCatalogPageProps) {
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {marcaBaterias.map((item) => {
-              const ficha = `/baterias/${marca.slug}/${item.referencia.toLowerCase()}`;
-              const sinFoto = !item.publicId || SIN_FOTO.has(item.publicId);
-
-              return (
-                <Card
-                  key={item.id}
-                  className="overflow-hidden border-zinc-200 bg-white/90 shadow-lg shadow-zinc-900/5"
-                >
-                  {/* Toda el area de la imagen es el enlace a la ficha, igual
-                      que el boton "Ver detalle" de abajo. Con `c_fit` la foto
-                      entra completa, asi que el marco 4:3 la rodea con espacio
-                      en vez de recortarla. */}
-                  <Link
-                    href={ficha}
-                    aria-label={`Ver detalle de la ${item.titulo}`}
-                    className="group relative block aspect-[4/3] w-full cursor-pointer overflow-hidden bg-zinc-100"
-                  >
-                    {sinFoto ? (
-                      <p className="absolute inset-0 flex items-center justify-center px-4 text-center text-xs text-zinc-500">
-                        Foto pendiente
-                      </p>
-                    ) : (
-                      <Image
-                        src={getCloudinaryProductoUrl(item.publicId)}
-                        alt={`Batería ${marca.name} referencia ${item.referencia}`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-contain transition-opacity duration-200 group-hover:opacity-80"
-                      />
-                    )}
-                  </Link>
-                  <CardHeader>
-                    <CardTitle>{item.titulo}</CardTitle>
-                    {/* Antes este badge caia a `?? "PLOMO"`, que affirmaba una
-                        tecnologia en las 20 referencias que no la tienen
-                        declarada. Si no hay dato, no se muestra nada. */}
-                    {item.tecnologia ? (
-                      <CardAction>
-                        <Badge variant={TECH_VARIANT[item.tecnologia]}>
-                          {item.tecnologia}
-                        </Badge>
-                      </CardAction>
-                    ) : null}
-                    <CardDescription>
-                      {item.referencia}{" "}
-                      {item.disponible ? "• Disponible" : "• No disponible"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter>
-                    <Button asChild className="w-1/2">
-                      <Link href={ficha}>Ver detalle</Link>
-                    </Button>
-                    <Button
-                      asChild
-                      className="w-1/2 bg-green-600 hover:bg-green-600"
-                    >
-                      <a
-                        href={waMeUrl(
-                          WHATSAPP_COMERCIAL,
-                          "Buen día, estoy interesado en comprar una " +
-                            item.titulo +
-                            " para mi carro.",
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Comprar
-                      </a>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              );
-            })}
+            {marcaBaterias.map((item) => (
+              <TarjetaBateria key={item.id} bateria={item} marca={marca} />
+            ))}
           </div>
         )}
       </section>

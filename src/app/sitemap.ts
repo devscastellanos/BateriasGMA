@@ -1,8 +1,11 @@
 import type { MetadataRoute } from "next";
 
-import { baterias, SIN_FOTO } from "@/data/bateriaData";
-import { marcas } from "@/data/marcasData";
-import { getCloudinaryProductoUrl } from "@/lib/cloudinary";
+import {
+  getFotoBateria,
+  listarBaterias,
+  listarMarcas,
+  urlFicha,
+} from "@/lib/catalogo";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -16,29 +19,32 @@ import { SITE_URL } from "@/lib/site";
  * declararia que todas las paginas cambiaron hoy, que no es cierto. Google
  * anyways ignora `changeFrequency` y `priority`.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // `/baterias` sin parametros es el catalogo completo; con `?q=` o filtros es
+  // una busqueda y no se indexa (ver `src/app/baterias/page.tsx`).
   const fijas: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/` },
+    { url: `${SITE_URL}/baterias` },
     { url: `${SITE_URL}/contacto` },
+    { url: `${SITE_URL}/terminos-y-condiciones` },
+    { url: `${SITE_URL}/politica-de-datos` },
+    { url: `${SITE_URL}/garantias-y-devoluciones` },
   ];
 
-  const deMarca: MetadataRoute.Sitemap = marcas
-    .filter((marca) => marca.activo)
-    .map((marca) => ({ url: `${SITE_URL}/baterias/${marca.slug}` }));
+  const deMarca: MetadataRoute.Sitemap = (await listarMarcas()).map((marca) => ({
+    url: `${SITE_URL}/baterias/${marca.slug}`,
+  }));
 
-  const deProducto: MetadataRoute.Sitemap = baterias.flatMap((bateria) => {
-    const marca = marcas.find((m) => m.id === bateria.marcaId && m.activo);
-    if (!marca) return [];
+  const deProducto: MetadataRoute.Sitemap = (await listarBaterias()).map(({ bateria, marca }) => {
+    const url = `${SITE_URL}${urlFicha(marca, bateria)}`;
 
-    const url = `${SITE_URL}/baterias/${marca.slug}/${bateria.referencia.toLowerCase()}`;
+    // Las referencias sin foto (8 con el asset en 404, mas las 10 de Willard que
+    // aun no tienen `publicId`) entran igual, pero sin imagen: la ficha se
+    // publica, lo que no hay es una foto que indexar. La URL que se manda es la
+    // de Cloudinary con `c_fit`, que es la misma que ve la persona en la pagina.
+    const foto = getFotoBateria(bateria);
 
-    // Las 8 referencias de `SIN_FOTO` entran sin imagen: la ficha se publica
-    // igual, pero no hay foto que indexar. La URL que se manda es la de
-    // Cloudinary con la transformation `c_fit`, que es la misma que ve la
-    // persona en la pagina.
-    const sinFoto = !bateria.publicId || SIN_FOTO.has(bateria.publicId);
-
-    return [{ url, ...(sinFoto ? {} : { images: [getCloudinaryProductoUrl(bateria.publicId)] }) }];
+    return { url, ...(foto ? { images: [foto] } : {}) };
   });
 
   return [...fijas, ...deMarca, ...deProducto];

@@ -1,10 +1,34 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import Form from "next/form";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useCarrito } from "@/lib/carrito";
 import { HashLink } from "./hash-link";
+
+// Buscador del header: solo lleva a `/baterias?q=…`, donde se arma el resultado
+// en servidor. Es un formulario GET, asi que funciona tambien sin JavaScript.
+function Buscador({ onBuscar }: { onBuscar?: () => void }) {
+  return (
+    <Form action="/baterias" onSubmit={onBuscar} className="relative w-full" role="search">
+      <Search
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-zinc-500"
+      />
+      <Input
+        type="search"
+        name="q"
+        placeholder="Buscar referencia…"
+        aria-label="Buscar batería por referencia"
+        className="pl-8"
+      />
+    </Form>
+  );
+}
 
 // Los enlaces del header van sueltos, sin envolver en <Button asChild>.
 // Con `asChild` el botón se convierte en un Slot de Radix que se fusiona
@@ -34,6 +58,10 @@ import {
 export default function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  // El header no se desmonta al navegar: sin controlar el estado, el menu
+  // movil quedaria abierto encima de los resultados de la busqueda.
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const { unidades } = useCarrito();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,12 +100,15 @@ export default function Header() {
             <HashLink href="/#baterias" className={navDesktop}>
               Baterías
             </HashLink>
+            <Link href="/baterias" className={navDesktop}>
+              Catálogo
+            </Link>
             <Link href="/contacto" className={navDesktop}>
               Contacto
             </Link>
           </div>
           <div className="md:hidden">
-            <Sheet>
+            <Sheet open={menuAbierto} onOpenChange={setMenuAbierto}>
               <SheetTrigger asChild>
                 <Button
                   variant={"outline"}
@@ -105,6 +136,7 @@ export default function Header() {
                   <SheetTitle>Menu</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-2 px-4 pb-4">
+                  <Buscador onBuscar={() => setMenuAbierto(false)} />
                   <SheetClose asChild>
                     <Link href="/" className={navMovil}>
                       Inicio
@@ -114,6 +146,11 @@ export default function Header() {
                     <HashLink href="/#baterias" className={navMovil}>
                       Baterías
                     </HashLink>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link href="/baterias" className={navMovil}>
+                      Catálogo
+                    </Link>
                   </SheetClose>
                   <SheetClose asChild>
                     <Link href="/contacto" className={navMovil}>
@@ -126,7 +163,19 @@ export default function Header() {
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-2 md:justify-end">
-          <Button size={"icon"}>
+          <div className="hidden w-56 md:block">
+            <Buscador />
+          </div>
+          <Button size={"icon"} asChild className="relative">
+            <Link
+              href="/carrito"
+              aria-label={unidades > 0 ? `Carrito, ${unidades} productos` : "Carrito"}
+            >
+            {unidades > 0 ? (
+              <span className="absolute -top-1.5 -right-1.5 flex min-w-5 items-center justify-center rounded-full bg-red-700 px-1 text-xs font-semibold text-white">
+                {unidades}
+              </span>
+            ) : null}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -141,6 +190,7 @@ export default function Header() {
                 d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
               />
             </svg>
+            </Link>
           </Button>
         </div>
       </div>

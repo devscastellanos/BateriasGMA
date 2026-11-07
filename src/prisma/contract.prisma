@@ -1,0 +1,286 @@
+// use prisma-8
+
+// ===========================================================================
+// Baterías GMA — Grupo Miscelánea Automotriz S.A.S.
+// Contrato de datos para la Fase 5 (catálogo en base de datos).
+// ===========================================================================
+//
+// QUÉ ES ESTE ARCHIVO Y QUÉ NO ES
+//
+// Es el documento que define qué va a haber en la base de datos el día que el
+// catálogo salga de `src/data/bateriaData.ts`. NO está conectado a nada: Prisma
+// no está instalado en el proyecto y este archivo no se ejecuta hoy. El sitio
+// sigue leyendo de los `.ts` y funciona igual.
+//
+// Se escribe ahora, antes de migrar, por una razón concreta: lo que no esté
+// aquí no va a estar después, y agregar una columna con 31 filas cargadas es
+// una migración. El esquema se decide una vez, y se está decidiendo en este
+// archivo.
+//
+// ---------------------------------------------------------------------------
+// POR QUÉ SE LLAMA contract.prisma Y NO schema.prisma
+//
+// Pediste un `schema.prisma`. Ese era el nombre hasta Prisma ORM 7. En la
+// versión actual (Prisma 8) el mismo archivo se llama `contract.prisma` y vive
+// en `src/prisma/`. Además cambió el interior:
+//
+//   - Los bloques `generator` y `datasource` ya no existen. La conexión y las
+//     rutas van en `prisma.config.ts`, que NO se crea todavía: si se escribiera
+//     ahora, el build fallaría por un módulo que no está instalado.
+//   - Los tipos son los de PostgreSQL. Antes se escribía `String @db.VarChar(35)`;
+//     ahora es `VarChar(35)`. Y `String` a secas ya es una columna `text`.
+//   - `@updatedAt` ya no existe: se escribe `temporal.updatedAt()`.
+//
+// La buena noticia es que los `model` se leen casi igual, y los `@@check` y los
+// índices por expresión que hacen falta acá ahora son nativos: antes exigían
+// SQL a mano. Eso simplifica lo que había propuesto.
+//
+// ---------------------------------------------------------------------------
+// ADVERTENCIA SOBRE LA VERSIÓN
+//
+// Prisma tuvo 3 versiones mayores en 10 meses: la 7 salió en noviembre de 2025
+// y la 8 en 2026. Este archivo está escrito con la sintaxis de la 8, que es la
+// actual. Antes de implementarlo, confirmá que la versión que instalás sigue
+// usando `contract.prisma` y no `schema.prisma`; si instalás la 7, cambian el
+// nombre del archivo, el bloque `generator`, la forma de los tipos y
+// `temporal.updatedAt()`. Los `model` son lo único que se mantiene igual.
+//
+// Si querés que un agente de programación lo valide solo, `npx prisma skills
+// sync` instala las habilidades de Prisma 8 en el proyecto.
+//
+// ===========================================================================
+
+
+// ---------------------------------------------------------------------------
+// Enumeraciones
+//
+// En Prisma 8 un `enum` NO es un tipo enum de PostgreSQL: la columna se guarda
+// como texto y Prisma le pone su propia restricción de pertenencia. Eso está
+// bien para estos dos casos, y además permite agregar un valor después sin
+// una migración de tipo de columna.
+//
+// Los valores son exactamente los que ya usan los `.ts`, para que la carga
+// inicial sea una copia y no haya que traducir nada.
+// ---------------------------------------------------------------------------
+enum Tecnologia {
+  @@type("pg/text@1")
+  PLOMO = "PLOMO"
+  EFB   = "EFB"
+  AGM   = "AGM"
+}
+
+enum Polaridad {
+  @@type("pg/text@1")
+  derecha  = "derecha"
+  izquierda = "izquierda"
+}
+
+
+// ---------------------------------------------------------------------------
+// MARCA — 6 filas hoy (mac, willard, duncan, bosch, acdelco, moura)
+//
+// `id` es la clave sustituta. No aparece en ninguna URL ni en ninguna pantalla:
+// verificado, hoy `id` solo se usa como llave de React. Por eso puede pasar a
+// ser un UUID sin romper un solo enlace. Ese es el motivo de que las URLs se
+// construyan con `slug` y nunca con `id`.
+//
+// `slug` es el identificador de negocio: es el segmento de /baterias/{slug}.
+//
+// NOTA PENDIENTE: hoy `marcasData.ts` tiene `id` y `slug` distintos en 3 de las
+// 6 marcas (`marca-bosch`/`bosch`, `ACDelco`/`acdelco`, `Moura`/`moura`). Aquí
+// hay un solo identificador. Ninguna de esas 3 tiene productos, así que
+// unificarlas ahora no cuesta nada; después, sí: son 23 filas de `marcaId` por
+// cambiar.
+// ---------------------------------------------------------------------------
+model Marca {
+  id            Uuid     @id @default(uuid())
+  nombre        String
+  slug          String   @unique
+  descripcion   String   @default("")
+  logoPublicId  String?
+  activo        Boolean  @default(true)
+  creadoEn      temporal.createdAt()
+  actualizadoEn temporal.updatedAt()
+
+  baterias Bateria[]
+}
+
+
+// ---------------------------------------------------------------------------
+// BATERÍA — 31 filas hoy (23 Duncan, 8 MAC)
+//
+// El nombre de la tabla sale del nombre del modelo con la inicial en minúscula:
+// `Bateria` → tabla `bateria`. Las columnas conservan el nombre del campo
+// (camelCase), igual que en `bateriaData.ts`, para no llenar el archivo de
+// `@map`. Si más adelante se quiere snake_case, es un `@map` por campo.
+// ---------------------------------------------------------------------------
+model Bateria {
+  id       Uuid  @id @default(uuid())
+  marcaId  Uuid
+  marca    Marca @relation(fields: [marcaId], references: [id], onDelete: Restrict)
+
+  // EL IDENTIFICADOR DE NEGOCIO. Es lo que va en la URL
+  // (/baterias/{slug}/{referencia} en minúscula) y lo que la gente escribe
+  // cuando pregunta por WhatsApp. Nunca se muestra un UUID.
+  referencia  String @unique
+  titulo      String
+
+  // Texto largo para posicionar en Google. Es la Fase 4 y hoy no existe en
+  // ninguna parte: el sitio arma las meta descripciones con nombres de campo.
+  // NULL hasta que se escriba. Agregar la columna después, con datos cargados,
+  // sería una migración.
+  descripcion String?
+
+  // Ruta del asset en Cloudinary. NULL = la batería no tiene foto.
+  //
+  // ESTE CAMPO REEMPLAZA AL CONJUNTO `SIN_FOTO` DE `bateriaData.ts`. Los 8
+  // publicIds que hoy dan 404 pasan a ser NULL, la página se sigue publicando
+  // igual sin foto, y el `Set` desaparece. El `Set` no habría sobrevivido a la
+  // migración: vive en el mismo archivo que los datos, y cuando los datos se
+  // mudan se hubiera quedado atrás, dejando 8 fotos rotas sin ningún aviso.
+  publicId   String?
+  caja       String?
+  amperaje   Int?
+  cca        Int?
+  polaridad  Polaridad?
+  tecnologia Tecnologia?
+
+  // Inventario. NULL = no lo sabemos, se cotiza por WhatsApp. Es un estado
+  // legítimo para una batería, no un dato faltante.
+  //
+  // REEMPLAZA A `disponible: boolean`, que hoy es `true` en las 43 filas: nunca
+  // se ha ejecutado la rama "No disponible" ni del catálogo ni de la ficha. Un
+  // booleano no sirve para inventario.
+  stock Int?
+
+  // Precio de venta al público, en pesos, con impuestos incluidos. DECIDIDO: se
+  // muestra en la tarjeta del catálogo y en la ficha, y por eso es NOT NULL.
+  //
+  // Antes esta columna admitía NULL con el significado de "a cotizar". Ya no
+  // aplica: si el precio se publica, tiene que haber precio. Dejarlo nullable
+  // abriría la puerta a que una fila nueva entre sin precio y la página muestre
+  // un hueco, que es justo lo que en el `.ts` impide el campo obligatorio.
+  precio Numeric(12, 2)
+
+  // "Aparece en el sitio". Distinto de stock: una batería puede estar agotada
+  // y seguir publicada, o al revés.
+  activo        Boolean  @default(true)
+  creadoEn      temporal.createdAt()
+  actualizadoEn temporal.updatedAt()
+
+  // --- índices -----------------------------------------------------------
+  //
+  // Los que sostienen lo que el sitio ya consulta: el catálogo de una marca
+  // ordena por marca, y la ficha busca por referencia.
+  //
+  // Los de `caja`, `tecnologia` y `polaridad` son para la Fase 2 (filtros). Son
+  // parciales (`where`) a propósito: lo que no se muestra no ocupa índice.
+  @@index([marcaId], name: "bateria_marca")
+  @@index([caja], where: "activo", name: "bateria_caja_activo")
+  @@index([tecnologia], where: "activo", name: "bateria_tecnologia_activo")
+  @@index([polaridad], where: "activo", name: "bateria_polaridad_activo")
+
+  // Para el buscador de texto parcial de la portada ("ns40", "42r", "efb").
+  //
+  // Va como expresión y no como `@type: "gin"` sobre el campo porque un GIN
+  // plano sobre un `text` usa `text_ops`, que solo sirve para contención de
+  // arreglos: no ayuda a buscar texto. Lo que hace falta es el operador de
+  // trigramas, y eso solo se puede pedir por expresión.
+  //
+  // REQUIERE la extensión pg_trgm activa en la base, o el índice falla al
+  // crearse. No se puede declarar desde acá: va en la migración.
+  @@index(expression: "referencia gin_trgm_ops", type: "gin", name: "bateria_referencia_trgm")
+
+  // --- restricciones -----------------------------------------------------
+
+  // LA MÁS IMPORTANTE DEL ARCHIVO.
+  //
+  // `referencia` es única en todo el catálogo por decisión de negocio: las
+  // referencias están adaptadas por marca. La base lo hace cumplir, no el
+  // recuerdo de nadie.
+  //
+  // Esto es una protección que HOY NO EXISTE. En `bateriaData.ts` no hay nada
+  // que impida cargar dos registros con la misma referencia: `.find()`
+  // devolvería el primero, `generateStaticParams` generaría dos rutas iguales
+  // y el build no fallaría. El sitio mostraría una de las dos, en silencio.
+  //
+  // Restricción y no índice: lo que se declara arriba con `@unique` es una
+  // restricción, que además crea el índice. Un índice a secas no rechazaría el
+  // duplicado.
+  //
+  // (Alternativa si algún día se quiere permitir minúsculas en el dato:
+  //  @@index(expression: "lower(referencia)", unique: true, name: "...")
+  //  pero entonces se pierde la normalización de abajo.)
+
+  // Se exige mayúscula para que la unicidad de arriba sea realmente insensible
+  // a mayúsculas. Sin esto, "31h1250" y "31H1250" son valores distintos para
+  // PostgreSQL y ambos entrarían, generando dos veces la misma URL.
+  //
+  // Hoy hay solo 2 referencias en minúscula: `30h1250` y `31h1250`.
+  // Normalizarlas NO cambia sus URLs, porque la URL se calcula con
+  // `toLowerCase()`. Son dos valores.
+  @@check(expression: "referencia = upper(referencia)", name: "bateria_referencia_mayuscula")
+
+  // No negativa del inventario y del precio. Un stock negativo o un precio
+  // negativo son errores de captura, no estados válidos del negocio.
+  //
+  // El precio ya no necesita la parte del `IS NULL`: la columna es NOT NULL, y
+  // un precio que no se puede dejar en blanco es preferible a uno que a veces
+  // exista y a veces no, porque la página muestra el precio siempre.
+  @@check(expression: "stock IS NULL OR stock >= 0", name: "bateria_stock_no_negativo")
+  @@check(expression: "precio >= 0", name: "bateria_precio_no_negativo")
+}
+
+
+// ===========================================================================
+// MAPA DESDE LOS ARCHIVOS .ts ACTUALES
+//
+// Para quien implemente la Fase 5, campo por campo:
+//
+//   Bateria (bateriaData.ts)        ->  Bateria (este archivo)
+//   ---------------------------------------------------------------------
+//   id            String ("NS40R670") -> id            Uuid   (cambia de valor)
+//   marcaId       "duncan"           -> marcaId       Uuid   (FK real)
+//   referencia    String              -> referencia    String @unique
+//   titulo        String              -> titulo        String
+//   (no existe)                     -> descripcion   String?      NUEVO, Fase 4
+//   publicId      String              -> publicId      String?      NULL = sin foto
+//   caja          String?             -> caja          String?
+//   amperaje      number?             -> amperaje      Int?
+//   cca           number?             -> cca           Int?
+//   polaridad     "derecha"|"izquierda" -> polaridad  Polaridad?
+//   tecnologia    "PLOMO"|"EFB"|"AGM" -> tecnologia    Tecnologia?
+//   disponible    boolean             -> activo        Boolean
+//                                      -> stock         Int?        REEMPLAZA
+//   precio        number (obligatorio) -> precio        Numeric(12,2) NOT NULL
+//   (no existe)                     -> creadoEn      temporal
+//   (no existe)                     -> actualizadoEn temporal    ALimenta el
+//                                                                          sitemap
+//
+//   SIN_FOTO (Set de 8)              -> publicId = NULL
+//   marcas: id + slug (distintos)    -> un solo slug
+//
+// ===========================================================================
+// LO QUE ESTE ARCHIVO NO RESUELVE
+//
+// 1. `titulo` está desnormalizado: dice "Batería Duncan caja 42 850 / Polaridad
+//    derecha", o sea que repite en texto libre lo que ya viven en `caja` y
+//    `polaridad`. Consecuencia medida: hay 6 pares de títulos que solo se
+//    diferencian por el sufijo de polaridad (cajas 27, 34, 42×2, 48, NS60), y en
+//    una cuadrícula se ven como tarjetas repetidas. Es un problema de datos, no
+//    de esquema, y no se arregla con una restricción.
+//
+// 2. `caja` es texto libre con 14 valores distintos (27, 30H, 31H, 34, 35, 36,
+//    42, 47, 48, 49, 4D, 65, NS40, NS60). Funciona. Pero si la Fase 2 quiere
+//    "filtrar por caja" con agrupamiento y conteo, lo adecuado es una tabla
+//    `caja` y una FK, no un texto. No se crea todavía porque sería adivinar.
+//
+// 3. No hay modelo de pedido, cliente ni pago. Eso es la Fase 6 y depende de
+//    qué medios de pago se conecten (Addi, Sistecrédito, PSE). No se adivina.
+//
+// 4. `logoPublicId` es NULL cuando no hay logo, y `marca-card.tsx` hoy hace
+//    `logo ?? "baterias/MAC"`: una marca sin logo recibe el de MAC. Con esta
+//    columna eso se puede corregir (placeholder con la inicial, o nada), pero
+//    es un cambio de pantalla, no de esquema.
+//
+// ===========================================================================
